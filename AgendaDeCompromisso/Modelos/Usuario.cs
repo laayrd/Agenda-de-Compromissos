@@ -20,4 +20,9 @@ public class Usuario
         }
         _compromissos.Add(compromisso);
     }
+    public override string ToString() {
+        return NomeUsuario;
+    }
 }
+
+
