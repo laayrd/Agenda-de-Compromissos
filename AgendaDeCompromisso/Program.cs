@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-
 using AgendaDeCompromisso.Modelos;
 
 CultureInfo culturaBrasileira = new("pt-BR");
@@ -19,6 +18,15 @@ try {
     Console.WriteLine($"\nErro ao criar usuário: {e.Message}");
     return;
 }
+
+// Novo trecho para cadastrar Local (mantendo seu estilo)
+Console.WriteLine("\nCadastrando Local do Compromisso");
+Console.Write("Nome do Local: ");
+string nomeLocal = Console.ReadLine();
+Console.Write("Endereço: ");
+string enderecoLocal = Console.ReadLine();
+
+Local local = new Local(nomeLocal, enderecoLocal);
 
 Console.WriteLine("\nCadastrando novo Compromisso");
 
@@ -54,9 +62,27 @@ while (descricaoCompromisso == null) {
 }
 
 try {
-    Compromisso compromisso = new((DateTime)dataCompromisso, (TimeSpan)horaCompromisso, descricaoCompromisso, usuario);
+    Compromisso compromisso = new(
+        (DateTime)dataCompromisso, 
+        (TimeSpan)horaCompromisso, 
+        descricaoCompromisso, 
+        usuario,
+        local // Novo parâmetro
+    );
+    
     Console.WriteLine("Compromisso criado com sucesso!\n");
     Console.WriteLine(compromisso);
+    
+    // Trecho opcional para participantes (pode ser comentado)
+    Console.WriteLine("\nAdicionar participante? (S/N)");
+    if (Console.ReadLine()?.ToUpper() == "S") {
+        Console.Write("Nome: ");
+        string nomePart = Console.ReadLine();
+        Console.Write("Email: ");
+        string email = Console.ReadLine();
+        
+        compromisso.AdicionarParticipante(new Participante(nomePart, email));
+    }
 } catch (ArgumentException e) {
     Console.WriteLine("Erro na reserva: \n" + e.Message);
     return;

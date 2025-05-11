@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AgendaDeCompromisso.Modelos;
 
@@ -24,5 +25,3 @@ public class Usuario
         return NomeUsuario;
     }
 }
-
-

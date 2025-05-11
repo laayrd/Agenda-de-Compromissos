@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AgendaDeCompromisso.Modelos;
 
@@ -7,39 +8,35 @@ public class Compromisso
     private DateTime _data;
     private TimeSpan _hora;
     
-    public DateTime Data { get {
-        return _data;
-    } }
-    public TimeSpan Hora { get {
-        return _hora;
-    } }
+    public DateTime Data { get { return _data; } }
+    public TimeSpan Hora { get { return _hora; } }
     public string? DescricaoCompromisso { get; }
 
     private readonly Usuario _usuario;
-    //private readonly Local _local;
+    private readonly Local _local; // Descomentado
 
-    //private readonly List<Participante> _participantes = new();
-    //public IReadOnlyCollection<Participante> Participantes => _participantes;
+    private readonly List<Participante> _participantes = new(); // Descomentado
+    public IReadOnlyCollection<Participante> Participantes => _participantes; // Descomentado
     //private readonly List<Anotacao> _anotacoes = new();
     //public IReadOnlyCollection<Anotacao> Anotacoes => _anotacoes;
     public readonly List<string> ErrosDeValidacao = [];
 
-    public Compromisso(DateTime data, TimeSpan hora, string descricao, Usuario usuario/*, Local local*/) {
+    public Compromisso(DateTime data, TimeSpan hora, string descricao, Usuario usuario, Local local) { // Modificado
         _data = data;
         _hora = hora;
         DescricaoCompromisso = descricao;
         _usuario = usuario;
-        //_local = local;
+        _local = local; // Adicionado
 
         if(!ValidarCompromisso()) {
             throw new ArgumentException(string.Join("\n", ErrosDeValidacao));
         }
     }
-    // public void AdicionarParticipante(Participante participante) {
-    //     if(participante == null) throw new ArgumentNullException();
-    //     _participantes.Add(participante);
-    //     participante.AdicionarCompromisso(this);
-    // }
+    public void AdicionarParticipante(Participante participante) { // Descomentado
+        if(participante == null) throw new ArgumentNullException();
+        _participantes.Add(participante);
+        participante.AdicionarCompromisso(this);
+    }
     // public void AdicionarAnotacao(string texto) {
     //     if(texto == null) throw new ArgumentNullException();
     //     _anotacoes.Add(new Anotacao(texto));
@@ -59,7 +56,6 @@ public class Compromisso
 
     public override string ToString()
     {
-        return $"\nDescrição Compromisso: {DescricaoCompromisso}\nUsuário: {_usuario}\nData: {_data:dd/MM/yyyy}\nHora: {_hora:hh\\:mm}"; //Local: {_local}
+        return $"\nDescrição Compromisso: {DescricaoCompromisso}\nUsuário: {_usuario}\nLocal: {_local}\nData: {_data:dd/MM/yyyy}\nHora: {_hora:hh\\:mm}";
     }
 }
-
