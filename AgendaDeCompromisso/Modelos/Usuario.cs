@@ -17,11 +17,11 @@ public class Usuario
 
     public void AdicionarCompromisso (Compromisso compromisso) {
         if(compromisso == null) {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(compromisso));
         }
         _compromissos.Add(compromisso);
     }
     public override string ToString() {
-        return NomeUsuario;
+        return $"{NomeUsuario}";
     }
 }
