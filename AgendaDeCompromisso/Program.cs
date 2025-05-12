@@ -92,6 +92,12 @@ while(true) {
     if (opcao != "S") {
         break;
     }
+    try {
+        local.ValidarCapacidade(compromisso.Participantes.Count + 1);
+    } catch(InvalidOperationException e) {
+        Console.WriteLine("Erro: " + e.Message);
+        break;
+    }
     Console.Write("Nome: ");
     string nomeParticipante = Console.ReadLine();
     Console.Write("Email: ");
