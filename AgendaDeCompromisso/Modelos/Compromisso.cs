@@ -13,34 +13,34 @@ public class Compromisso
     public string? DescricaoCompromisso { get; }
 
     private readonly Usuario _usuario;
-    private readonly Local _local; // Descomentado
+    private readonly Local _local;
 
-    private readonly List<Participante> _participantes = new(); // Descomentado
-    public IReadOnlyCollection<Participante> Participantes => _participantes; // Descomentado
-    //private readonly List<Anotacao> _anotacoes = new();
-    //public IReadOnlyCollection<Anotacao> Anotacoes => _anotacoes;
+    private readonly List<Participante> _participantes = new();
+    public IReadOnlyCollection<Participante> Participantes => _participantes;
+    private readonly List<Anotacao> _anotacoes = new();
+    public IReadOnlyCollection<Anotacao> Anotacoes => _anotacoes;
     public readonly List<string> ErrosDeValidacao = [];
 
-    public Compromisso(DateTime data, TimeSpan hora, string descricao, Usuario usuario, Local local) { // Modificado
+    public Compromisso(DateTime data, TimeSpan hora, string descricao, Usuario usuario, Local local) {
         _data = data;
         _hora = hora;
         DescricaoCompromisso = descricao;
         _usuario = usuario;
-        _local = local; // Adicionado
+        _local = local;
 
         if(!ValidarCompromisso()) {
             throw new ArgumentException(string.Join("\n", ErrosDeValidacao));
         }
     }
-    public void AdicionarParticipante(Participante participante) { // Descomentado
+    public void AdicionarParticipante(Participante participante) {
         if(participante == null) throw new ArgumentNullException();
         _participantes.Add(participante);
         participante.AdicionarCompromisso(this);
     }
-    // public void AdicionarAnotacao(string texto) {
-    //     if(texto == null) throw new ArgumentNullException();
-    //     _anotacoes.Add(new Anotacao(texto));
-    // }
+    public void AdicionarAnotacao(string texto) {
+         if(texto == null) throw new ArgumentNullException();
+         _anotacoes.Add(new Anotacao(texto));
+    }
     public bool ValidarCompromisso() {
         if (_data < DateTime.Today) {
             ErrosDeValidacao.Add("A data mínima não pode ser anterior à data de hoje");
