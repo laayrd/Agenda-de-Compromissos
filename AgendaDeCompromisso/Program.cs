@@ -14,21 +14,36 @@ try {
     usuario = new(nome);
     Console.WriteLine("\nUsuário criado com sucesso");
     Console.WriteLine($"Nome: {usuario.NomeUsuario}");
-} catch (Exception e) {
+} catch (ArgumentException e) {
     Console.WriteLine($"\nErro ao criar usuário: {e.Message}");
     return;
 }
 
-// Novo trecho para cadastrar Local (mantendo seu estilo)
 Console.WriteLine("\nCadastrando Local do Compromisso");
+
 Console.Write("Nome do Local: ");
 string nomeLocal = Console.ReadLine();
 Console.Write("Endereço: ");
 string enderecoLocal = Console.ReadLine();
+Console.Write("Capacidade: ");
+string capacidadeLocal = Console.ReadLine();
+if (!int.TryParse(capacidadeLocal, out int capacidade))
+{
+    Console.WriteLine("Capacidade inválida.");
+    return;
+}
 
-Local local = new Local(nomeLocal, enderecoLocal);
+Local local;
+try{
+    local = new(nomeLocal, enderecoLocal, capacidade);
+    Console.WriteLine("\nLocal cadastrado com sucesso.");
+    Console.WriteLine(local);
+} catch (ArgumentException e) {
+    Console.WriteLine("Erro ao cadastrar local: " + e.Message);
+    return;
+}
 
-Console.WriteLine("\nCadastrando novo Compromisso");
+Console.WriteLine("\nCadastrando Novo Compromisso");
 
 DateTime? dataCompromisso = null;
 TimeSpan? horaCompromisso = null;
@@ -61,29 +76,69 @@ while (descricaoCompromisso == null) {
     descricaoCompromisso = Console.ReadLine();
 }
 
+Compromisso compromisso;
 try {
-    Compromisso compromisso = new(
-        (DateTime)dataCompromisso, 
-        (TimeSpan)horaCompromisso, 
-        descricaoCompromisso, 
-        usuario,
-        local // Novo parâmetro
-    );
-    
+    compromisso = new((DateTime)dataCompromisso, (TimeSpan)horaCompromisso, descricaoCompromisso, usuario, local);
     Console.WriteLine("Compromisso criado com sucesso!\n");
     Console.WriteLine(compromisso);
-    
-    // Trecho opcional para participantes (pode ser comentado)
-    Console.WriteLine("\nAdicionar participante? (S/N)");
-    if (Console.ReadLine()?.ToUpper() == "S") {
-        Console.Write("Nome: ");
-        string nomePart = Console.ReadLine();
-        Console.Write("Email: ");
-        string email = Console.ReadLine();
-        
-        compromisso.AdicionarParticipante(new Participante(nomePart, email));
-    }
 } catch (ArgumentException e) {
     Console.WriteLine("Erro na reserva: \n" + e.Message);
     return;
+}
+
+while(true) {
+    Console.WriteLine("\nAdicionar participante? (S/N)");
+    var opcao = Console.ReadLine()?.ToUpper();
+    if (opcao != "S") {
+        break;
+    }
+    Console.Write("Nome: ");
+    string nomeParticipante = Console.ReadLine();
+    Console.Write("Email: ");
+    string emailParticipante = Console.ReadLine();
+
+    try {
+        Participante participante = new(nomeParticipante, emailParticipante);
+        compromisso.AdicionarParticipante(participante);
+        Console.WriteLine("Participante adicionado com sucesso!");
+    } catch(ArgumentException e) {
+        Console.WriteLine("Erro ao adicionar participante: " + e.Message);
+    }
+}
+
+while(true) {
+    Console.Write("\nDeseja adicionar uma anotação ao compromisso? (S/N): ");
+    var opcao = Console.ReadLine()?.ToUpper();
+    if(opcao != "S") {
+        break;
+    }
+    Console.Write("Digite a anotação: ");
+    string textoAnotacao = Console.ReadLine();
+
+    try {
+        compromisso.AdicionarAnotacao(textoAnotacao);
+        Console.WriteLine("Anotação adicionada com sucesso!");
+    } catch(ArgumentException e) {
+        Console.WriteLine("Erro ao adicionar anotação: " + e.Message);
+    }
+}
+
+Console.WriteLine("\nResumo Final do Compromisso");
+
+Console.WriteLine(compromisso);
+
+if (compromisso.Participantes.Count > 0) {
+    Console.WriteLine("\nParticipante(s): ");
+    foreach (var p in compromisso.Participantes)
+        Console.WriteLine($"- {p}");
+} else {
+    Console.WriteLine("\nNenhum participante adicionado.");
+}
+
+if (compromisso.Anotacoes.Count > 0) {
+    Console.WriteLine("\nAnotações: ");
+    foreach (var a in compromisso.Anotacoes)
+        Console.WriteLine($"- {a}");
+} else {
+    Console.WriteLine("\nNenhuma anotação registrada.");
 }
